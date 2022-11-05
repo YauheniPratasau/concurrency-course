@@ -30,12 +30,7 @@ public class PriceAggregator {
                 .map(shopId -> new CompletableFuture<Double>().completeAsync(
                                         () -> priceRetriever.getPrice(itemId, shopId), fixedExecutor
                                 ).completeOnTimeout(Double.NaN, 2500, TimeUnit.MILLISECONDS) // 2,5 seconds because 3 seconds counter begins in tests, so there is we don't have full 3 seconds
-                                .handle((price, exception) -> {
-                                    if (exception != null) {
-                                        return Double.NaN;
-                                    }
-                                    return price;
-                                })
+                                .handle((price, exception) -> exception != null ? Double.NaN : price)
                 )
                 .collect(Collectors.toList())
                 .toArray(new CompletableFuture[shopIds.size()]);
