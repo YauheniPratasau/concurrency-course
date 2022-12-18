@@ -8,7 +8,7 @@ public class AuctionPessimistic implements Auction {
         this.notifier = notifier;
     }
 
-    private Bid latestBid;
+    private volatile Bid latestBid;
 
     public boolean propose(Bid bid) {
         if (latestBid == null || bid.getPrice() > latestBid.getPrice()) {
